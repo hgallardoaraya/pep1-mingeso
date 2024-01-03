@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang = "es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Registrar pago estudiante</title>
+</head>
+<body>
+    <nav th:insert="~{fragments/navbar.html :: navbar}"> </nav>
+    <h1>Seleccionar razones estudiante</h1>
+    <form id="seleccionarRazonesForm" action="">
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha inicio</th>
+                    <th>Fecha fin</th>
+                    <th>Monto</th>
+                    <th>Pagar</th>
+                </tr>
+            </thead>
+            <span th:text="${#lists.size(razones) > 1} ? '' : 'No existen razones de pago pendientes ni atrasadas.'"></span>
+            <tbody>
+                <tr th:each="razon:${razones}">
+                    <td th:text="${razon.numero}"></td>
+                    <td th:text="${razon.tipo.tipo}"></td>
+                    <td th:text="${razon.estado.estado}"></td>
+                    <td th:text="${razon.fechaInicio}"></td>
+                    <td th:text="${razon.fechaFin}"></td>
+                    <td th:text="${razon.monto}"></td>
+                    <td>
+                        <input type="checkbox" name="razon" th:value="${razon.id}"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">PAGAR</button>
+    </form>
+</body>
+</html>
+
+<script th:inline="javascript">
+    const seleccionarRazonesForm = document.getElementById("seleccionarRazonesForm");
+    const rut = [[${rut}]];
+    //enviar formulario para ingresar estudiante
+    seleccionarRazonesForm.addEventListener("submit", e => enviarRazonesForm(e));
+
+    const enviarRazonesForm = async (e) => {
+        e.preventDefault();
+        const checkedBoxes = document.querySelectorAll('input[name=razon]:checked');
+        const idsRazones = [];
+        checkedBoxes.forEach(razonInput => idsRazones.push(razonInput.value));
+        if(!idsRazones.length > 0) return 0;
+        const data = {rut, idsRazones};
+        const response = await fetch("/pagos/registrar", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        const rawResponse = await response.json();
+
+        alert(rawResponse.message);
+
+        location.reload();
+    }
+
+</script>

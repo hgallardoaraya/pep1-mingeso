@@ -1,0 +1,36 @@
+pipeline{
+    agent any
+    tools{
+        maven "maven"
+        dockerTool "docker"
+    }
+    stages{
+        stage("Build JAR File"){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/hgallardoaraya/monolito-mingeso']])
+                dir("topeducation"){
+                    sh "mvn clean install"
+                }
+            }
+        }
+        stage("Test"){
+            steps{
+                dir("topeducation"){
+                    sh "mvn test"
+                }
+            }
+        }        
+        stage("Build and Push Docker Image"){
+            steps{
+                dir("topeducation"){
+                    script{
+                        withDockerRegistry(credentialsId: 'dckpass'){
+                            sh "docker build -t polloh/topeducation_spring ."
+                            sh "docker push polloh/topeducation_spring"
+                        }
+                    }                    
+                }
+            }
+        }
+    }
+}

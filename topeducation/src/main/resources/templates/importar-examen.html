@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang = "es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Importar examen</title>
+</head>
+<body>
+    <nav th:insert="~{fragments/navbar.html :: navbar}"> </nav>
+    <form id="archivoForm" action="">
+        <input type="file" id="archivo">
+        <button type="submit">Enviar archivo</button>
+    </form>
+</body>
+</html>
+
+<script>
+    const archivoForm = document.getElementById("archivoForm");
+    
+    archivoForm.addEventListener("submit", (e) => enviarArchivo(e));
+
+    const enviarArchivo = async (e) => {
+        e.preventDefault();
+        
+        const archivo = document.getElementById("archivo");
+        const formData = new FormData();
+        formData.append("archivo", archivo.files[0]);
+
+        const response = await fetch("/examenes/importar", {
+            method: "POST",            
+            body: formData
+        })
+
+        const rawResponse = await response.json();
+        alert(rawResponse.message);
+
+        if(rawResponse.status === 302) {
+            location.href(rawResponse.pathRedirect);
+        }
+        if(rawResponse.status === 201){
+            location.reload();
+        }
+    }
+
+</script>

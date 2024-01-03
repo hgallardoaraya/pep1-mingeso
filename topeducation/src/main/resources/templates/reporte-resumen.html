@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang = "es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Reporte resumen</title>
+</head>
+<body>
+<table>
+    <nav th:insert="~{fragments/navbar.html :: navbar}"> </nav>
+    <thead>
+    <tr>
+        <th>Rut</th>
+        <th>N° exámenes rendidos</th>
+        <th>Promedio puntaje exámenes</th>
+        <th>Total arancel</th>
+        <th>Tipo pago</th>
+        <th>N° cuotas pactadas</th>
+        <th>N° cuotas pagadas</th>
+        <th>Arancel pagado</th>
+        <th>Total pagado</th>
+        <th>Fecha último pago</th>
+        <th>Arancel por pagar</th>
+        <th>Total por pagar</th>
+        <th>N° cuotas atrasadas</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entrada:${reporte}">
+        <td th:text="${entrada.rut}"></td>
+        <td th:text="${entrada.numeroExamenesRendidos}"></td>
+        <td th:text="${entrada.promedioExamenes}"></td>
+        <td th:text="${entrada.totalArancel}"></td>
+        <td th:text="${entrada.tipoPago}"></td>
+        <td th:text="${entrada.numeroCuotasPactadas}"></td>
+        <td th:text="${entrada.numeroCuotasPagadas}"></td>
+        <td th:text="${entrada.arancelPagado}"></td>
+        <td th:text="${entrada.totalPagado}"></td>
+        <td th:text="${entrada.fechaUltimoPago}"></td>
+        <td th:text="${entrada.saldoArancelPendiente}"></td>
+        <td th:text="${entrada.saldoTotalPendiente}"></td>
+        <td th:text="${entrada.numeroCuotasAtrasadas}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

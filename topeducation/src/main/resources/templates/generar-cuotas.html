@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang = "es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Generar cuotass</title>
+</head>
+<body>
+    <nav th:insert="~{fragments/navbar.html :: navbar}"> </nav>
+    <h1 class="text-3xl mb-4 font-bold">Generar cuotas</h1>
+    <form id="ingresarRutForm" class="flex flex-col gap-3 w-fit">
+        <div class="flex flex-col">
+            <label for="rut" class="text-gray-950 font-medium">Rut estudiante:</label>
+            <input type="text" id="rut" name="rut" placeholder="Ej: 12.345.678-9"  class="text-gray-800" required/>
+        </div>                            
+        <button type="submit" class="border-2 border-solid bg-blue-500 text-white font-medium py-3 px-2 uppercase pointer">Enviar rut</button>
+    </form>
+    <form id="generarCuotasForm" class="flex flex-col gap-3 w-fit">
+        <div id="seleccionarCuotasContainer" class="flex flex-col">        
+        </div>           
+        <button id="generarCuotasBtn" type="submit" class="border-2 border-solid bg-blue-500 text-white font-medium py-3 px-2 uppercase pointer hidden">Generar cuotas</button>
+    </form>
+</body>
+</html>
+
+<script>
+    const ingresarRutForm = document.getElementById("ingresarRutForm");
+    const generarCuotasForm = document.getElementById("generarCuotasForm");
+
+    //enviar formulario para ingresar rut
+    ingresarRutForm.addEventListener("submit", e => enviarRutForm(e));
+    generarCuotasForm.addEventListener("submit", e => enviarGenerarCuotasForm(e));
+
+    const enviarRutForm = async (e) => {
+        e.preventDefault();
+        const rut = document.getElementById("rut").value;
+
+        if(rut == null) return 0;
+
+        console.log(rut);
+        
+        const response = await fetch(`/estudiantes/maxcuotas?rut=${rut}`);
+
+        const rawResponse = await response.json();
+
+        console.log(rawResponse);
+
+        const seleccionarCuotasContainer = document.getElementById("seleccionarCuotasContainer");
+        
+        while (seleccionarCuotasContainer.childElementCount > 0) {
+            seleccionarCuotasContainer.removeChild(seleccionarCuotasContainer.firstChild);
+        }
+
+        const numCuotasLabel = document.createElement("label");
+        numCuotasLabel.setAttribute("for", "numCuotas");
+        numCuotasLabel.classList.add("text-gray-950", "font-medium")
+        numCuotasLabel.textContent = `Número de cuotas (1-${rawResponse.data.maxCuotas}): `;
+
+        const numCuotasInput = document.createElement("input")
+        numCuotasInput.setAttribute("type", "number");
+        numCuotasInput.setAttribute("id", "numCuotas");
+        numCuotasInput.setAttribute("name", "numCuotas");
+        numCuotasInput.setAttribute("placeholder", `Ej: ${rawResponse.data.maxCuotas}` );
+        numCuotasInput.setAttribute("min", "1");
+        numCuotasInput.setAttribute("max", rawResponse.data.maxCuotas);
+        numCuotasInput.required = true;
+        numCuotasInput.classList.add("text-gray-800");
+
+        const seleccionarCuotasInput = document.createElement("input");
+
+        seleccionarCuotasContainer.appendChild(numCuotasLabel);
+        seleccionarCuotasContainer.appendChild(numCuotasInput);
+
+        
+        const generarCuotasBtn = document.getElementById("generarCuotasBtn");
+        generarCuotasBtn.classList.remove("hidden");
+        
+    }
+
+    const enviarGenerarCuotasForm = async (e) => {
+        e.preventDefault();
+        const rut = document.getElementById("rut").value;
+        const numCuotas = document.getElementById("numCuotas").value;
+
+        const response = await fetch(`/razones/generar?rut=${rut}&numCuotas=${numCuotas}`, { method: 'POST' });
+
+        const rawResponse = await response.json();
+
+        alert(rawResponse.message);
+
+        if(rawResponse.status === 201){
+            location.reload();
+        }
+    }
+</script>

@@ -1,0 +1,5 @@
+app:
+http://topeducation.brazilsouth.cloudapp.azure.com/
+
+jenkins:
+http://te-pipeline.brazilsouth.cloudapp.azure.com:8080/

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang = "es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Listado razones</title>
+</head>
+<body>
+    <nav th:insert="~{fragments/navbar.html :: navbar}"> </nav>
+    <table>
+        <thead>
+        <tr>
+            <th>Número</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Fecha inicio</th>
+            <th>Fecha fin</th>
+            <th>Monto</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="razon:${razones}">
+            <td th:text="${razon.numero}"></td>
+            <td th:text="${razon.tipo.tipo}"></td>
+            <td th:text="${razon.estado.estado}"></td>
+            <td th:text="${razon.fechaInicio}"></td>
+            <td th:text="${razon.fechaFin}"></td>
+            <td th:text="${razon.monto}"></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

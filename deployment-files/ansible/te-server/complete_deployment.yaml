@@ -1,0 +1,86 @@
+- hosts: all
+  become: yes
+  vars_files:
+    - ./docker_credentials.yaml
+  tasks:
+    - name: install prerequisites
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates 
+          - curl 
+          - gnupg-agent
+          - software-properties-common
+        update_cache: yes
+
+    - name: add apt-key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: add docker repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+
+    - name: install docker 
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        update_cache: yes
+
+    - name: add userpermissions
+      shell: "usermod -aG docker hktr"
+
+    - name: install python package manager
+      apt:
+        name: python3-pip
+        
+    - name: install python sdk    
+      ansible.builtin.pip:
+        name: 
+          - "docker==6.1.3"
+          - "docker-compose"
+
+    - name: Copiar el archivo docker-compose.yml al servidor
+      copy:
+        src: ./docker-compose.yml
+        dest: /home/hktr
+
+    - name: Copiar configuración nginx al servidor
+      synchronize:
+        src: ./nginx
+        dest: /home/hktr
+
+    - name: Copiar archivo para autopullear contenedores
+      synchronize:
+        src: ./redeploy.sh
+        dest: /home/hktr
+
+    - name: Dar permisos de ejecución al archivo redeploy.sh
+      command: chmod +x /home/hktr/redeploy.sh
+
+    - name: Copiar configuración webhook al servidor
+      synchronize:
+        src: ./webhook.conf
+        dest: /etc
+    
+    - name: Instalar mediante apt webhook
+      ansible.builtin.apt:
+        name: webhook
+        state: present
+
+    - name: Copiar volumen local al servidor
+      synchronize:
+        src: ./data
+        dest: /home/hktr
+    
+    - name: Log into DockerHub
+      docker_login:
+        username: '{{ dockerhub_username }}'
+        password: '{{ dockerhub_password }}'
+
+
+    - name: deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_src: /home/hktr

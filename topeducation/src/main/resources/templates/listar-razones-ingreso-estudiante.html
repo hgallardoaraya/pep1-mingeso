@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang = "es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Listar razones de pago estudiante</title>
+</head>
+<body>
+  <nav th:insert="~{fragments/navbar.html :: navbar}"> </nav>
+  <h1 class="text-3xl mb-4 font-bold">Listar razones de pago de un estudiante</h1>
+  <form id="ingresarRutForm" class="flex flex-col gap-3 w-fit" th:action="@{/razones}" method="GET">
+    <div class="flex flex-col">
+      <label for="rut" class="text-gray-950 font-medium">Rut estudiante:</label>
+      <input type="text" id="rut" name="rut" placeholder="Ej: 12.345.678-9"  class="text-gray-800" required/>
+    </div>
+    <button type="submit" class="border-2 border-solid bg-blue-500 text-white font-medium py-3 px-2 uppercase pointer">Enviar rut</button>
+  </form>
+</body>
+</html>

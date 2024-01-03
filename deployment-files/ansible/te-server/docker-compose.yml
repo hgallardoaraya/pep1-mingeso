@@ -1,0 +1,67 @@
+version: "3.8"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: topeducation_nginx_proxy
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app1
+      - app2
+      - app3
+  mysql-db:
+    container_name: topeducation_mysql_container
+    image: mysql
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: topeducation
+    ports:
+      - 33060:3306
+  app1:
+    container_name: topeducation_spring_container1
+    image: polloh/topeducation_spring
+    ports:
+      - "8091:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/topeducation?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - mysql-db
+  app2:
+    container_name: topeducation_spring_container2
+    image: polloh/topeducation_spring
+    ports:
+      - "8092:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/topeducation?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - mysql-db
+  app3:
+    container_name: topeducation_spring_container3
+    image: polloh/topeducation_spring
+    ports:
+      - "8093:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/topeducation?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - mysql-db

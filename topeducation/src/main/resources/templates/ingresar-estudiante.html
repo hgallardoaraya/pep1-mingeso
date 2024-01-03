@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang = "es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar estudiante</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <nav th:insert="~{fragments/navbar.html :: navbar}"> </nav>
+    <div class="p-3 w-screen h-screen">
+        <h1 class="text-3xl mb-4 font-bold">Ingresar estudiante</h1>
+        <form id="ingresarEstudianteForm" class="flex flex-col gap-3 w-fit">
+            <div class="flex flex-col">
+                <label for="nombre1" class="text-gray-950 font-medium">Primer nombre:</label>
+                <input type="text" id="nombre1" name="nombre1" placeholder="Ej: Juán"  class="text-gray-800" required/>
+            </div>            
+            <div class="flex flex-col">
+                <label for="nombre2"  class="text-gray-950 font-medium">Segundo nombre:</label>
+                <input type="text" id="nombre2" name="nombre2" placeholder="Ej: Ramón" class="text-gray-800" required/>
+            </div>
+            <div class="flex flex-col">
+                <label for="apellido1" class="text-gray-950 font-medium">Primer apellido:</label>
+                <input type="text" id="apellido1" name="apellido1" placeholder="Ej: Pérez" class="text-gray-800" required/>
+            </div>
+            <div class="flex flex-col">
+                <label for="apellido2" class="text-gray-950 font-medium">Segundo apellido:</label>
+                <input type="text" id="apellido2" name="apellido2" placeholder="Ej: Díaz" class="text-gray-800" required/>
+            </div>
+            <div class="flex flex-col">
+                <label for="rut" class="text-gray-950 font-medium">Rut:</label>
+                <input type="text" id="rut" name="rut" placeholder="Ej: 12.345.678-9"  class="text-gray-800" required/>
+            </div>            
+            <div class="flex flex-col">
+                <label for="fechaNacimiento" class="text-gray-950 font-medium">Fecha de nacimiento:</label>
+                <input type="date" id="fechaNacimiento" name="fechaNacimiento" class="text-gray-800" required/>
+            </div>
+            <div class="flex flex-col">
+                <label for="anioEgreso" class="text-gray-950 font-medium">Año de egreso:</label>
+                <input type="number" id="anioEgreso" name="anioEgreso" min="1900" max="2099" step="1"  placeholder="Ej: 2020" class="text-gray-800" required/>
+            </div>
+            <div class="flex flex-col">
+                <label for="nombreColegio" class="text-gray-950 font-medium">Nombre del colegio:</label>
+                <input type="text" id="nombreColegio" name="nombreColegio" step="1"  placeholder="Ej: Santa Margarita" class="text-gray-800" required/>
+            </div>
+            <div class="flex flex-col">
+                <label for="idTipoColegio" class="text-gray-950 font-medium">Tipo colegio:</label>
+                <select name="idTipoColegio" id="idTipoColegio">
+                    <option value="" selected disabled hidden>Seleccionar opción</option>
+                    <option value="0">Municipal</option>
+                    <option value="1">Subvencionado</option>
+                    <option value="2">Particular</option>
+                </select>            
+            </div>                                    
+            <button type="submit" class="border-2 border-solid bg-blue-500 text-white font-medium py-3 px-2 uppercase pointer">Ingresar estudiante</button>
+        </form>
+    </div>
+</body>
+</html>
+
+<script>
+    let ingresarEstudianteForm = document.getElementById("ingresarEstudianteForm");
+
+    //enviar formulario para ingresar estudiante
+    ingresarEstudianteForm.addEventListener("submit", e => enviarEstudianteForm(e))
+
+    const enviarEstudianteForm = async (e) => {
+        e.preventDefault();
+
+        const nombre1 = document.getElementById("nombre1").value;
+        const nombre2 = document.getElementById("nombre2").value;
+        const apellido1 = document.getElementById("apellido1").value;
+        const apellido2 = document.getElementById("apellido2").value;
+        const rut = document.getElementById("rut").value;
+        const fechaNacimiento = document.getElementById("fechaNacimiento").value;
+        const anioEgreso = document.getElementById("anioEgreso").value;
+        const nombreColegio = document.getElementById("nombreColegio").value;
+
+        const estudiante = {
+            nombre1,
+            nombre2,
+            apellido1,
+            apellido2,
+            rut,
+            fechaNacimiento,
+            anioEgreso,
+            nombreColegio,
+        }
+
+        const idTipoColegio = parseInt(document.getElementById("idTipoColegio").value);
+        const idTipoPagoArancel = 0;
+        const idInteresMesesAtraso = 0;
+
+        const requestData = {
+            estudiante,
+            idTipoColegio,
+            idTipoPagoArancel,
+            idInteresMesesAtraso
+        }
+
+
+        const response = await fetch("/estudiantes", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+
+        const rawResponse = await response.json();
+
+        alert(rawResponse.message);
+
+        location.reload();
+    }
+</script>
