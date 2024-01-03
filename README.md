@@ -1,4 +1,4 @@
-# monolito-mingeso
+# PEP1 Métodos de Ingeniería de Software
 Aplicación web con un estilo de arquitectura monolítico desarrollada como proyecto para la asignatura Métodos de Ingeniería de Software de la USACH.
 
 El foco de este proyecto está en implementar las distintas funcionalidades, cumplir con las reglas de negocio, realizar tests unitarios, utilizar una arquitectura monolítica, contenerizar las aplicaciones, desplegar en la nube, automatizar el despliegue e implementar un pipeline de integración continua.
